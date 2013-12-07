@@ -1,0 +1,6 @@
+
+struct message {
+};
+
+struct serverd {
+};
