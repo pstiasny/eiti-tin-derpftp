@@ -13,7 +13,7 @@ src/server.o:
 
 tests: bin/testclient
 
-bin/testclient: src/testclient.o
+bin/testclient: src/testclient.o lib/libderpftp.a
 	gcc -o bin/testclient -L./lib src/testclient.o -lderpftp
 
 src/testclient.o: src/testclient.c src/api.h
