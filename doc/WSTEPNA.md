@@ -112,6 +112,22 @@ Struktura modułów wygląda obecnie następująco:
 Kompilacja całego projektu odbywa się za pomocą standardowego narzędzia `make`.
 
 
+Interfejs
+---------
+
+Zgodnie z treścią zadania, biblioteka udostępnia następujące funkcje,
+zdefiniowane w `api.h`:
+
+    int fs_open_server(char *server_addr);
+    int fs_close_server(int server_handle);
+    int fs_open(int server_handle, char *name, int flags);
+    int fs_write(int server_handle, int fd, void *buf, size_t len);
+    int fs_read(int server_handle, int fd, void *buf, size_t len);
+    int fs_lseek(int server_handle, int fd, long offset, int whence);
+    int fs_close(int server_handle, int fd);
+    int fs_fstat(int server_handle, int fd, struct stat *buf);
+
+
 Współbieżność
 -------------
 
