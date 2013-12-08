@@ -34,7 +34,3 @@ struct fs_stat_response {
     } stat;
 };
 
-struct serverd {
-    int in_use;
-    int sock;
-};
