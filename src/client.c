@@ -9,7 +9,7 @@
 #include <netinet/in.h>
 
 #define MAX_SERVERS 32
-#define INV_HANDLE(h) ((h < 0) || (h > MAX_SERVERS) || !servers[h].in_use)
+#define INV_HANDLE(h) ((h < 0) || (h >= MAX_SERVERS) || !servers[h].in_use)
 static struct serverd {
     int in_use;
     int sock;
