@@ -40,7 +40,7 @@ int read_response(int sock, struct fs_response *buf)
     return 0;
 }
 
-int fs_open_server(char *server_addr)
+int fs_open_server(const char *server_addr)
 {
     int server_handle;
     struct serverd *sd;
@@ -83,7 +83,7 @@ int fs_close_server(int server_handle)
     /* TODO: connection finalization? */
 }
 
-int fs_open(int server_handle, char *name, int flags)
+int fs_open(int server_handle, const char *name, int flags)
 {
     struct fs_open_command cmd;
     struct fs_response res;

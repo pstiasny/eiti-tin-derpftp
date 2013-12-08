@@ -9,9 +9,9 @@
 #define FSE_UNKNOWN_HOST    (-4)
 #define FSE_INVALID_HANDLE  (-5)
 
-int fs_open_server(char *server_addr);
+int fs_open_server(const char *server_addr);
 int fs_close_server(int server_handle);
-int fs_open(int server_handle, char *name, int flags);
+int fs_open(int server_handle, const char *name, int flags);
 int fs_write(int server_handle, int fd, void *buf, size_t len);
 int fs_read(int server_handle, int fd, void *buf, size_t len);
 int fs_lseek(int server_handle, int fd, long offset, int whence);
