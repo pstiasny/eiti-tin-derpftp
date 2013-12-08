@@ -1,3 +1,17 @@
+Przeznaczenie
+=============
+
+W ramach projektu powstanie:
+
+* protokół,
+* serwer,
+* biblioteka klienta,
+* referencyjny klient
+
+służące zdalnemu dostępowi do plików, w tym pobierania i wysyłania do zdalnego
+drzewa katalogów plików i fragmentów plików poprzez interfejs pogramistyczny
+zbliżony do standardu POSIX odnośnie operacji na plikach.
+
 
 Protokół
 ========
@@ -72,4 +86,55 @@ Podstawowa struktura odpowiedzi serwera:
          +-----------------+
     32   |val              |
          +-----------------+
+
+
+Struktura projektu
+==================
+
+Kod projektu powstaje w repozytorium dostępnym git pod adresem:
+
+<https://github.com/pstiasny/eiti-tin-derpftp>.
+
+Struktura modułów wygląda obecnie następująco:
+
+    Makefile
+    src/
+        api.h         - API biblioteki klienta: funkcje, definicje kodów błędów
+        types.h       - definicje struktur danych
+        client.c      - implementacja biblioteki klienta
+        testclient.c  - implementacja klienta testowego
+        server.c      - implementacja serwera
+    lib/
+        libderpftp.a  - statycznie dołączana biblioteka klienta
+    bin/
+        derpftpd      - program serwera
+        testclient    - interaktywny klient
+    tests/            - skrypty i dane środowiska testowego
+
+Kompilacja całego projektu odbywa się za pomocą standardowego narzędzia `make`.
+
+
+Współbieżność
+-------------
+
+Serwer dla każdego przychodzącego połączenia otwierta podproces za pomocą
+funkcji `fork`.  Każdy podproces przechowuje stan sesji dla danego połączenia,
+w szczególności deskryptory otwartych plików -- używane w komunikatach
+deskryptory odpowiadają deskryptorom plików przypisanych przez system
+operacyjny do procesu.  Sesja wygasa po rozłączeniu klienta lub po upłenięciu
+ustalonego czasu.  Serwer ogranicza liczbę maksymalnie uruchomionych sesji
+do ustalonej liczby.
+
+
+Procedura testowania
+--------------------
+
+Środowisko testowe składa się z:
+
+* pobierającej ze standardowego wejścia komendy implementacji klienta,
+* programu netcat,
+* zestawu referencyjnych zapisów strumieni TCP w postaci szesnastkowej,
+* zestawu skryptów w języku bash używających powyższych do weryfikacji
+  poprawności.
+
 

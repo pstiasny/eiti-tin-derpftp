@@ -49,7 +49,7 @@ int fs_open_server(char *server_addr)
         return FSE_CON_ERROR;
 
     sd->in_use = 1;
-    return 0;
+    return FSE_OK;
 }
 
 int fs_close_server(int server_handle)
@@ -65,6 +65,20 @@ int fs_close_server(int server_handle)
 
 int fs_open(int server_handle, char *name, int flags)
 {
+    struct fs_open_command cmd;
+
+    if ((server_handle < 0) || (server_handle > MAX_SERVERS) ||
+            !servers[server_handle].in_use)
+        return FSE_INVALID_HANDLE;
+
+    memset(&cmd, 0, sizeof(cmd));
+    cmd.base_command.type = FSMSG_OPEN;
+    cmd.base_command.arg1 = flags;
+    strncpy(cmd.filename, name, 256);
+    write(servers[server_handle].sock, &cmd, sizeof(cmd));
+
+    /* TODO: read response */
+
     return 0;
 }
 
