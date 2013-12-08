@@ -80,12 +80,10 @@ Struktura używana przez FSMSG_OPEN:
 
 Podstawowa struktura odpowiedzi serwera:
 
-        +0                +32
-         +-----------------+
-    0    |status           |
-         +-----------------+
-    32   |val              |
-         +-----------------+
+        +0                      +32                     +64
+         +-----------------------+-----------------------+
+    0    |status                 |val                    |
+         +-----------------------+-----------------------+
 
 
 Struktura projektu
