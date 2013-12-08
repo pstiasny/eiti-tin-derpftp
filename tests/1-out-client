@@ -1,0 +1,3 @@
+fs_open_server returned 0
+fs_open returned 1
+fs_close_server returned 0

@@ -33,3 +33,7 @@ src/client.o: src/client.c src/types.h src/api.h
 clean:
 	rm -f lib/* bin/* src/*.o
 
+
+test:
+	bash tests/test.sh
+
