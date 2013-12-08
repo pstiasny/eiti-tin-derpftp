@@ -2,6 +2,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define FSE_OK              (0)
+#define FSE_FAIL            (-1)
+#define FSE_CON_LIMIT       (-2)
+#define FSE_CON_ERROR       (-3)
+#define FSE_UNKNOWN_HOST    (-4)
+#define FSE_INVALID_HANDLE  (-5)
+
 int fs_open_server(char *server_addr);
 int fs_close_server(int server_handle);
 int fs_open(int server_handle, char *name, int flags);
