@@ -7,7 +7,7 @@ server: bin/derpftpd
 bin/derpftpd: src/server.o src/types.h
 	gcc -o bin/derpftpd src/server.o
 
-src/server.o:
+src/server.o: src/server.c
 	gcc -g -c -o src/server.o src/server.c
 
 
