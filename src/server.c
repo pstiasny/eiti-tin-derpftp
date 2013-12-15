@@ -6,16 +6,34 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+int send_reponse(int sock, int status, int value) {
+    struct fs_response resp = {status, value};
+    write(sock, &resp, sizeof(resp)); /* TODO: send all */
+    return 0;
+}
+
 int handle_connection(int sock, struct sockaddr_in *addr)
 {
-    int read_bytes, i;
-    char cmd[16], *cmdp;
-    while (0 < (read_bytes = read(sock, cmd, sizeof(cmd)))) {
-        cmdp = cmd;
-        while(read_bytes--)
-            printf("%x ", *cmdp++);
-        printf("\n");
+    int8_t cmd_type;
+    struct fs_open_command cmd;
+    int read_bytes, i, file;
+    while (1 == recv(sock, &cmd_type, sizeof(cmd_type), MSG_PEEK)) {
+        switch (cmd_type) {
+        case FSMSG_OPEN:
+            recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+            cmd.filename[255] = 0;
+            printf("received FSMSG_OPEN, filename = %s\n", cmd.filename);
+
+            file = open(cmd.filename, cmd.base_command.arg1);
+            send_reponse(sock, 0, file);
+
+            break;
+        default:
+            printf("unknown msg type %d\n", cmd_type);
+            return 1;
+        }
     }
+
     printf("subprocess exiting\n");
     return 0;
 }
