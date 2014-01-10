@@ -18,17 +18,56 @@ int handle_connection(int sock, struct sockaddr_in *addr)
     struct fs_open_command cmd;
     int read_bytes, i, file;
     while (1 == recv(sock, &cmd_type, sizeof(cmd_type), MSG_PEEK)) {
-        switch (cmd_type) {
-        case FSMSG_OPEN:
-            recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
-            cmd.filename[255] = 0;
-            printf("received FSMSG_OPEN, filename = %s\n", cmd.filename);
+        if (cmd_type==FSMSG_OPEN) {
+            recv(sock, &cmd_open, sizeof(cmd_open), MSG_WAITALL);
+            cmd_open.filename[255] = 0;
+            printf("received FSMSG_OPEN, filename = %s\n", cmd_open.filename);
 
-            file = open(cmd.filename, cmd.base_command.arg1);
+            file = open(cmd_open.filename, cmd_open.base_command.arg1);
             send_reponse(sock, 0, file);
+            }
+	    else if (cmd_type == FSMSG_WRITE) {
+		    recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+		    printf("received FSMSG_WRITE\n");
+		 
+		    char buffer[cmd.arg1];
+		    read(sock, &buffer, sizeof(buffer));
+		    ret = write(cmd.fd, &buffer, sizeof(buffer));
+		    send_reponse(sock, 0, ret);
+		    }
+	    else if (cmd_type == FSMSG_READ) {
+		    recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+		    printf("received FSMSG_READ\n");
+		 
+		    char buffer[cmd.arg1];
+		    read_bytes = read(cmd.fd, &buffer, sizeof(buffer));
+		    write(sock, &buffer, sizeof(buffer));
+            send_reponse(sock, 0, read_bytes);
+            }
+	    else if (cmd_type == FSMSG_LSEEK) {
+		    recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+		    printf("received FSMSG_LSEEK\n");
+		 
+		    ret = lseek(cmd.fd, cmd.arg1, cmd.arg2);
+		    send_reponse(sock, 0, ret);
+            }
+	    else if (cmd_type == FSMSG_CLOSE) {
+		    recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+		    printf("received FSMSG_CLOSE\n");
 
-            break;
-        default:
+		    ret = close(cmd.fd);
+		    send_reponse(sock, 0, ret);
+            }
+	    else if (cmd_type == FSMSG_STAT) {
+		    recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
+		    printf("received FSMSG_STAT\n");
+
+		    struct stat sb;
+		    ret = fstat(cmd.fd, &sb);
+		    write(sock, &sb, sizeof(sb));
+            send_reponse(sock, 0, ret);
+		 	}
+        else {
             printf("unknown msg type %d\n", cmd_type);
             return 1;
         }
