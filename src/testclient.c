@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-    int server_handle, len, fd, remote_fd, result;
+    int server_handle, len, fd, remote_fd, result, offset, whence;
     char input_buf[1024], filename[256];
 
     server_handle = fs_open_server((argc < 2) ? "localhost" : argv[1]);
@@ -49,6 +49,20 @@ int main(int argc, char **argv)
             printf("fs_read returned %d\n", result);
             if (result == FSE_FAIL)
                 perror("fs_read");
+
+        } else if (2 == sscanf(input_buf, "lseek %d %d", &offset, &whence)) {
+            result = fs_lseek(server_handle, remote_fd, offset, whence);
+
+            printf("fs_lseek returned %d\n", result);
+            if (result == FSE_FAIL)
+                perror("fs_lseek");
+
+        } else if (0 == strcmp(input_buf, "close\n")) {
+            result = fs_close(server_handle, remote_fd);
+
+            printf("fs_close returned %d\n", result);
+            if (result == FSE_FAIL)
+                perror("fs_close");
 
         } else {
             printf("unknown command\n");

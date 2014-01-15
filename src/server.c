@@ -57,7 +57,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
             printf("received FSMSG_LSEEK, fd = %i\n", cmd.fd);
 		 
             ret = lseek(cmd.fd, cmd.arg1, cmd.arg2);
-            send_reponse(sock, 0, ret);
+            send_reponse(sock, errno, ret);
             
             break;
         case FSMSG_CLOSE:
@@ -65,7 +65,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
             printf("received FSMSG_CLOSE, fd = %i\n", cmd.fd);
 
             ret = close(cmd.fd);
-            send_reponse(sock, 0, ret);
+            send_reponse(sock, errno, ret);
             
             break;
         case FSMSG_STAT:

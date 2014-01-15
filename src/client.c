@@ -57,8 +57,9 @@ int read_response(int sock, struct fs_response *buf)
     return 0;
 }
 
-// on success returns response value
-// on failure returns FSE_FAIL and sets errno
+/* on success returns response value
+ * on failure returns FSE_FAIL and sets errno
+ */
 int process_response(struct fs_response *res)
 {
     if (res->status) {
@@ -109,7 +110,6 @@ int fs_close_server(int server_handle)
 
     servers[server_handle].in_use = 0;
     return close(servers[server_handle].sock);
-    /* TODO: connection finalization? */
 }
 
 int fs_open(int server_handle, const char *name, int flags)
@@ -195,12 +195,30 @@ int fs_read(int server_handle, int fd, void *buf, size_t len)
 
 int fs_lseek(int server_handle, int fd, long offset, int whence)
 {
-    return 0;
+    struct fs_response res;
+    int sock;
+
+    if (INV_HANDLE(server_handle))
+        return FSE_INVALID_HANDLE;
+    sock = servers[server_handle].sock;
+
+    write_command(sock, FSMSG_LSEEK, fd, offset, whence);
+    read_response(sock, &res);
+    return process_response(&res);
 }
 
 int fs_close(int server_handle, int fd)
 {
-    return 0;
+    struct fs_response res;
+    int sock;
+
+    if (INV_HANDLE(server_handle))
+        return FSE_INVALID_HANDLE;
+    sock = servers[server_handle].sock;
+
+    write_command(sock, FSMSG_CLOSE, fd, 0, 0);
+    read_response(sock, &res);
+    return process_response(&res);
 }
 
 int fs_fstat(int server_handle, int fd, struct stat *buf)
