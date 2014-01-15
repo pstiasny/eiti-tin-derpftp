@@ -162,7 +162,35 @@ int fs_write(int server_handle, int fd, void *buf, size_t len)
 
 int fs_read(int server_handle, int fd, void *buf, size_t len)
 {
-    return 0;
+    struct fs_response res;
+    int sock, rcvd, response_len;
+
+    if (INV_HANDLE(server_handle))
+        return FSE_INVALID_HANDLE;
+    sock = servers[server_handle].sock;
+
+    if (-1 == write_command(sock, FSMSG_READ, fd, len, 0))
+        return FSE_CON_ERROR;
+
+    if (-1 == read_response(sock, &res))
+        return FSE_CON_ERROR;
+    if (res.status) {
+        errno = res.status;
+        return FSE_FAIL;
+    }
+    response_len = res.val;
+    if (response_len > len)
+        return FSE_INVALID_RESP;
+
+    for (; response_len > 0; response_len -= rcvd) {
+        rcvd = recv(sock, buf, response_len, 0);
+        if (rcvd <= 0)
+            return FSE_CON_ERROR;
+
+        buf += rcvd;
+    }
+
+    return res.val;
 }
 
 int fs_lseek(int server_handle, int fd, long offset, int whence)

@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-    int server_handle, len, remote_fd;
+    int server_handle, len, fd, remote_fd, result;
     char input_buf[1024], filename[256];
 
     server_handle = fs_open_server((argc < 2) ? "localhost" : argv[1]);
@@ -25,17 +25,30 @@ int main(int argc, char **argv)
                 perror("fs_open");
 
         } else if (2 == sscanf(input_buf, "write %255s %d", filename, &len)) {
-            printf("reading %s\n", filename);
-            int fd = open(filename, O_RDONLY);
+            fd = open(filename, O_RDONLY);
 
             char fbuf[len];
             int read_ = read(fd, fbuf, len);
             close(fd);
 
-            int result = fs_write(server_handle, remote_fd, fbuf, read_);
+            result = fs_write(server_handle, remote_fd, fbuf, read_);
             printf("fs_write returned %d\n", result);
             if (result == FSE_FAIL)
                 perror("fs_write");
+
+        } else if (2 == sscanf(input_buf, "read %255s %d", filename, &len)) {
+            char fbuf[len];
+            result = fs_read(server_handle, remote_fd, fbuf, len);
+
+            if (result >= 0) {
+                fd = open(filename, O_WRONLY | O_CREAT, 0666);
+                write(fd, fbuf, result);
+                close(fd);
+            }
+
+            printf("fs_read returned %d\n", result);
+            if (result == FSE_FAIL)
+                perror("fs_read");
 
         } else {
             printf("unknown command\n");

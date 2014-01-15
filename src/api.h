@@ -8,6 +8,7 @@
 #define FSE_CON_ERROR       (-3)
 #define FSE_UNKNOWN_HOST    (-4)
 #define FSE_INVALID_HANDLE  (-5)
+#define FSE_INVALID_RESP    (-6)
 
 int fs_open_server(const char *server_addr);
 int fs_close_server(int server_handle);

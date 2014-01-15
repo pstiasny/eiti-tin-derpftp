@@ -48,8 +48,8 @@ int handle_connection(int sock, struct sockaddr_in *addr)
 		 
             char buffer[cmd.arg1];
             read_bytes = read(cmd.fd, &buffer, sizeof(buffer));
-            write(sock, &buffer, sizeof(buffer));
-            send_reponse(sock, 0, read_bytes);
+            send_reponse(sock, errno, read_bytes);
+            write(sock, &buffer, read_bytes);
         }
             break;
         case FSMSG_LSEEK:
