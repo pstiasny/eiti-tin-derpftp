@@ -25,6 +25,23 @@ int get_free_handle()
     return -1;
 }
 
+int write_command(int sock, enum FSMSG_TYPE type, int32_t fd, int32_t arg1, int32_t arg2)
+{
+    struct fs_command cmd = { type, fd, arg1, arg2 };
+    void *cmdp = &cmd;
+    size_t sent, length = sizeof(cmd);
+
+    while (0 != (sent = send(sock, cmdp, length, 0))) {
+        if (sent == -1)
+            return -1;
+
+        length -= sent;
+        cmdp += sent;
+    }
+
+    return 0;
+}
+
 int read_response(int sock, struct fs_response *buf)
 {
     size_t len = sizeof(struct fs_response);
@@ -38,6 +55,18 @@ int read_response(int sock, struct fs_response *buf)
         bufp += got;
     }
     return 0;
+}
+
+// on success returns response value
+// on failure returns FSE_FAIL and sets errno
+int process_response(struct fs_response *res)
+{
+    if (res->status) {
+        errno = res->status;
+        return FSE_FAIL;
+    } else {
+        return res->val;
+    }
 }
 
 int fs_open_server(const char *server_addr)
@@ -101,17 +130,34 @@ int fs_open(int server_handle, const char *name, int flags)
     if (-1 == read_response(servers[server_handle].sock, &res))
         return FSE_CON_ERROR;
 
-    if (res.status) {
-        errno = res.status;
-        return FSE_FAIL;
-    } else {
-        return res.val;
-    }
+    return process_response(&res);
 }
 
 int fs_write(int server_handle, int fd, void *buf, size_t len)
 {
-    return 0;
+    struct fs_response res;
+    size_t sent = 0;
+    int sock;
+
+    if (INV_HANDLE(server_handle))
+        return FSE_INVALID_HANDLE;
+    sock = servers[server_handle].sock;
+
+    if (-1 == write_command(sock, FSMSG_WRITE, fd, len, 0))
+        return FSE_CON_ERROR;
+
+    for (; len > 0; len -= sent) {
+        sent = send(sock, buf, len, 0);
+        if (sent == -1)
+            return FSE_CON_ERROR;
+
+        buf += sent;
+    }
+
+    if (-1 == read_response(sock, &res))
+        return FSE_CON_ERROR;
+
+    return process_response(&res);
 }
 
 int fs_read(int server_handle, int fd, void *buf, size_t len)

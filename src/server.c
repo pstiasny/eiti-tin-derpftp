@@ -1,6 +1,7 @@
 #include "types.h"
 
 #include <stdio.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -26,7 +27,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
             printf("received FSMSG_OPEN, filename = %s\n", cmd_open.filename);
 
             file = open(cmd_open.filename, cmd_open.base_command.arg1);
-            send_reponse(sock, 0, file);
+            send_reponse(sock, errno, file);
         
             break;
         case FSMSG_WRITE:
@@ -37,7 +38,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
             char buffer[cmd.arg1];
             read(sock, &buffer, sizeof(buffer));
             ret = write(cmd.fd, &buffer, sizeof(buffer));
-            send_reponse(sock, 0, ret);
+            send_reponse(sock, errno, ret);
         }
             break;
         case FSMSG_READ:
