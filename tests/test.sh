@@ -3,12 +3,11 @@
 FAILED_ASSERTIONS=0
 
 transaction() {
-    rm /tmp/OUT
+    rm -f /tmp/OUT
     bin/derpftpd 2>&1 > /tmp/dout &
     DPID=$!
     bin/testclient 2>&1 > /tmp/cout
-    kill -SIGINT $DPID 2>&1 > /dev/null
-    kill -SIGKILL $DPID 2>&1 > /dev/null
+    kill -SIGTERM $DPID 2>&1 > /dev/null
 }
 
 assert_file_eq() {
@@ -77,7 +76,8 @@ TERM
 echo "TEST downloading inner part of file"
 transaction <<TERM
 open tests/FILE1
-lseek 10 0
+lseek 11 0
+lseek -1 1
 read /tmp/OUT 5
 close
 TERM
@@ -85,6 +85,7 @@ TERM
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
 fs_open returned 3
+fs_lseek returned 11
 fs_lseek returned 10
 fs_read returned 5
 fs_close returned 0
