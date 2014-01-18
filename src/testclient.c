@@ -41,7 +41,7 @@ int main(int argc, char **argv)
             result = fs_read(server_handle, remote_fd, fbuf, len);
 
             if (result >= 0) {
-                fd = open(filename, O_WRONLY | O_CREAT, 0666);
+                fd = open(filename, O_WRONLY | O_CREAT, 0660);
                 write(fd, fbuf, result);
                 close(fd);
             }
