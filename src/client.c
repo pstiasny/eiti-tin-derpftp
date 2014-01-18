@@ -77,7 +77,7 @@ int fs_open_server(const char *server_addr)
     struct serverd *sd;
     struct sockaddr_in addr;
     struct hostent *hp;
-    char *port_part;
+    char host_part[1024], *port_part;
 
     if (-1 == (server_handle = get_free_handle()))
         return FSE_CON_LIMIT;
@@ -86,11 +86,13 @@ int fs_open_server(const char *server_addr)
     /* if server_addr is of the form "host:port", parse the port part */
     if (0 != (port_part = strchr(server_addr, ':'))) {
         port = atoi(port_part + 1);
-        *port_part = 0;
+        strncpy(host_part, server_addr, port_part - server_addr);
+    } else {
+        strncpy(host_part, server_addr, sizeof(host_part));
     }
 
     /* resolve the name */
-    hp = gethostbyname(server_addr);
+    hp = gethostbyname(host_part);
     if (hp == 0)
         return FSE_UNKNOWN_HOST;
     memcpy((char*)&addr.sin_addr, (char*)hp->h_addr, hp->h_length);
