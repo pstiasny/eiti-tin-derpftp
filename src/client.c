@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -72,14 +73,21 @@ int process_response(struct fs_response *res)
 
 int fs_open_server(const char *server_addr)
 {
-    int server_handle;
+    int server_handle, port = 1337;
     struct serverd *sd;
     struct sockaddr_in addr;
     struct hostent *hp;
+    char *port_part;
 
     if (-1 == (server_handle = get_free_handle()))
         return FSE_CON_LIMIT;
     sd = &servers[server_handle]; 
+
+    /* if server_addr is of the form "host:port", parse the port part */
+    if (0 != (port_part = strchr(server_addr, ':'))) {
+        port = atoi(port_part + 1);
+        *port_part = 0;
+    }
 
     /* resolve the name */
     hp = gethostbyname(server_addr);
@@ -88,7 +96,7 @@ int fs_open_server(const char *server_addr)
     memcpy((char*)&addr.sin_addr, (char*)hp->h_addr, hp->h_length);
 
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(1337);
+    addr.sin_port = htons(port);
 
     /* create a socket */
     sd->sock = socket(AF_INET, SOCK_STREAM, 0);

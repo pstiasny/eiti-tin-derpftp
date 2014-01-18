@@ -94,8 +94,13 @@ int main(int argc, char *argv[])
     int listener_sock = socket(AF_INET, SOCK_STREAM, 0);
 
     addr.sin_family = AF_INET;
+
     addr.sin_addr.s_addr = inet_addr("0.0.0.0");
     addr.sin_port = htons(1337);
+    if (argc >= 2)
+        addr.sin_addr.s_addr = inet_addr(argv[1]);
+    if (argc >= 3)
+        addr.sin_port = htons(atoi(argv[2]));
 
     int yes=1;
     if (-1 == setsockopt(listener_sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))) {
