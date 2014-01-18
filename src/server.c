@@ -26,7 +26,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
             cmd_open.filename[255] = 0;
             printf("received FSMSG_OPEN, filename = %s\n", cmd_open.filename);
 
-            file = open(cmd_open.filename, cmd_open.base_command.arg1);
+            file = open(cmd_open.filename, cmd_open.base_command.arg1, 0660);
             send_reponse(sock, errno, file);
         
             break;
