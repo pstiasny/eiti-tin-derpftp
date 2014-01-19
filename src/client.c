@@ -119,7 +119,10 @@ int fs_close_server(int server_handle)
         return FSE_INVALID_HANDLE;
 
     servers[server_handle].in_use = 0;
-    return close(servers[server_handle].sock);
+    if (0 == close(servers[server_handle].sock))
+        return FSE_OK;
+    else
+        return FSE_CON_ERROR;
 }
 
 int fs_open(int server_handle, const char *name, int flags)
