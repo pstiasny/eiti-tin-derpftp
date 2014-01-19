@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define BUFSIZE   2048
+#define BUFSIZE   10240
 #define MIN(x,y)  ( ((x) < (y)) ? (x) : (y) )
 
 int send_reponse(int sock, int status, int value) {

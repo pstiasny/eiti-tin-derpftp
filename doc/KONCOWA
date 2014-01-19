@@ -42,11 +42,72 @@ ZWRACANA WARTOŚĆ
 
 int fs_open(int server_handle, const char *name, int flags)
 
+OPIS
+    Otwiera plik o nazwie name na serwerze.  Argument flags
+    odpowiada flagom polecenia open standardu POSIX.
+
+ZWRACANA WARTOŚĆ
+    Jeśli udało się otworzyć plik, zwracany jest nieujemny deskryptor
+    pliku.  W przeciwnym razie zwaracany jest jeden z kodów błedów:
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_CON_ERROR       Wystąpił błąd przy próbie zamknięcia połączenia.
+                        Zmienna errno została ustawiona na odpowiedni
+                        deskryptor błędu.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
+
 
 int fs_write(int server_handle, int fd, void *buf, size_t len)
 
+OPIS
+    Pisze len bajtów z bufora wskazywanego przez buf do zdalnego 
+    deskryptora pliku fd uzyskanego za pomocą fs_open.
+    Funkcja gwarantuje zapisanie całego bufora o ile nie wystąpi
+    bład po stronie serwera.
+
+ZWRACANA WARTOŚĆ
+    Jeśli udało się pisać do pliku, zwracana jest liczba zapisanych
+    bajtów.  W przeciwnym razie zwaracany jest jeden z kodów błedów:
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_CON_ERROR       Wystąpił błąd przy próbie zamknięcia połączenia.
+                        Zmienna errno została ustawiona na odpowiedni
+                        deskryptor błędu.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
+
+
 
 int fs_read(int server_handle, int fd, void *buf, size_t len)
+
+OPIS
+    Czyta nie więcej niż len bajtów ze zdalnego deskryptora pliku uzyskanego za
+    pomocą fs_open do bufora buf.
+
+ZWRACANA WARTOŚĆ
+    Jeśli pobranie bufora powiodło się, zwracana jest liczba odczytanych
+    bajtów.  Liczba ta może być mniejsza niż len jeśli ilość danych pozostałych
+    do odczytu jest mniejsza niż len lub len jest większe niż 10240 bajtów.
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_CON_ERROR       Wystąpił błąd przy próbie zamknięcia połączenia.
+                        Zmienna errno została ustawiona na odpowiedni
+                        deskryptor błędu.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
+
+    FSE_INVALID_RESP    Otrzymana od serwera odpowiedź jest niezgodna
+                        z protokołem.
 
 
 int fs_lseek(int server_handle, int fd, long offset, int whence)
