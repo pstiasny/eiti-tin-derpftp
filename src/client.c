@@ -110,7 +110,7 @@ int fs_open_server(const char *server_addr)
         return FSE_CON_ERROR;
 
     sd->in_use = 1;
-    return FSE_OK;
+    return server_handle;
 }
 
 int fs_close_server(int server_handle)
