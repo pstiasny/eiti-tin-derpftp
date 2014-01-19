@@ -16,7 +16,7 @@ tests: bin/testclient
 bin/testclient: src/testclient.o lib/libderpftp.a
 	gcc -o bin/testclient -L./lib src/testclient.o -lderpftp
 
-src/testclient.o: src/testclient.c src/api.h
+src/testclient.o: src/testclient.c include/fs_server.h
 	gcc -g -c -o src/testclient.o src/testclient.c
 
 
@@ -26,7 +26,7 @@ lib/libderpftp.a: src/client.o
 	ar ruv lib/libderpftp.a src/client.o
 	ranlib lib/libderpftp.a
 
-src/client.o: src/client.c src/types.h src/api.h
+src/client.o: src/client.c src/types.h include/fs_server.h
 	gcc -fPIC -g -c -Wall -o src/client.o src/client.c
 
 
