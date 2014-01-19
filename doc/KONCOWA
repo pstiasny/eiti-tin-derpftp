@@ -1,3 +1,62 @@
+Budowanie projektu
+==================
+
+W celu skompilowania plików binarnych należy użyć polecenia
+
+    make
+
+Aby uruchomić testy dla projektu:
+
+    make test
+
+Scenariusze testowe są opisane w skrypcie tests/test.sh.
+
+
+Uruchamianie serwera
+====================
+
+    bin/derpftpd [<adres serwera> <port>]
+
+
+Uruchomienie interaktywnego klienta testowego
+=============================================
+
+W skład projektu wchodzi interaktywny klient testowy.  Aby go uruchomić,
+należy użyć polecenia
+
+    bin/testclient [<adres lub nazwa serwera>:<port>]
+
+Klient przyjmuje na standardowym wejściu następujące polecenia:
+
+    open <ścieżka>
+        Otwarcie pliku
+
+    write <lokalna ścieżka> <długość>
+        Zapis długość bajtów pobranych z podanego lokalnego pliku.
+
+    read <lokalna ścieżka> <długość>
+        Pobranie długość bajtów do podanego lokalnego pliku.
+
+    lseek <offset> <whence>
+        Analogicznie do podanego poniżej interfejsu funkcji fs_lseek.
+
+    close
+        Zamknięcie otwartego przez open pliku.
+
+Klient dla każdej komendy wypisuje na standardowe wyjście wartości zwrócone
+prez odpowiednie funkcje biblioteki klienta.
+
+
+Interfejs biblioteki klienta
+============================
+
+Funkcje klienta udostępniane są w statycznie dołaczanej bibliotece
+lib/libderpftp.a.  Nagłówki dla tej biblioteki znajdują się w pliku
+include/fs_server.h.
+
+Poniżej dokumentacja zdefiniowanych w nagłówku funkcji:
+
+
 int fs_open_server(const char *server_addr)
 
 OPIS
