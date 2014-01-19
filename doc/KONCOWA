@@ -112,8 +112,43 @@ ZWRACANA WARTOŚĆ
 
 int fs_lseek(int server_handle, int fd, long offset, int whence)
 
+OPIS
+    Przesuwa wskaźnik odczytu/zapisu pliku dla zdalnego deskryptora
+    pliku fd.  W zależności od warości whence:
+
+    0                   Wskaźnik zostanie przesunięty na pozycję
+                        offset od początku pliku.
+
+    1                   Wskaźnik zostanie przesunięty o offset
+                        względem bieżącej pozycji.
+
+    2                   Wskaźnik zostanie przesunięty o offset
+                        względem końca pliku.
+
+ZWRACANA WARTOŚĆ
+    Aktualna pozycja w pliku lub kod błędu:
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
+
 
 int fs_close(int server_handle, int fd)
+
+OPIS
+    Zamknięcie zdalnego deskryptora pliku fd.  Po wywołaniu tej funkcji
+    deskryptor pliku staje się nieważny.
+
+ZWRACANA WARTOŚĆ
+    FSE_OK              Plik został zamknięty poprawnie.
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
 
 
 int fs_fstat(int server_handle, int fd, struct stat *buf)
