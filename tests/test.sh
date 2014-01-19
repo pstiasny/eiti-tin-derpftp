@@ -13,7 +13,7 @@ transaction() {
 assert_file_eq() {
     diff -w $2 -
     if [ $? != 0 ]; then
-        echo "FAIL: $1"
+        echo "** FAIL **: $1"
         FAILED_ASSERTIONS=$(( $FAILED_ASSERTIONS + 1 ))
     fi
 }

@@ -7,6 +7,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define BUFSIZE   2048
+#define MIN(x,y)  ( ((x) < (y)) ? (x) : (y) )
+
 int send_reponse(int sock, int status, int value) {
     struct fs_response resp = {status, value};
     write(sock, &resp, sizeof(resp)); /* TODO: send all */
@@ -18,7 +21,9 @@ int handle_connection(int sock, struct sockaddr_in *addr)
     int8_t cmd_type;
     struct fs_open_command cmd_open;
     struct fs_command cmd;
-    int read_bytes, ret, file;
+    int read_bytes, written_bytes, ret, file;
+    char buffer[BUFSIZE], *bufp = 0;
+
     while (1 == recv(sock, &cmd_type, sizeof(cmd_type), MSG_PEEK)) {
         switch (cmd_type) {
         case FSMSG_OPEN:
@@ -31,26 +36,31 @@ int handle_connection(int sock, struct sockaddr_in *addr)
         
             break;
         case FSMSG_WRITE:
-        {
             recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
             printf("received FSMSG_WRITE, fd = %i\n", cmd.fd);
             
-            char buffer[cmd.arg1];
-            read(sock, &buffer, sizeof(buffer));
-            ret = write(cmd.fd, &buffer, sizeof(buffer));
+            ret = 0;
+            while (0 < (read_bytes = read(sock, buffer, MIN(BUFSIZE, cmd.arg1)))) {
+                ret += read_bytes;
+                cmd.arg1 -= read_bytes;
+                write(cmd.fd, buffer, read_bytes);
+            }
             send_reponse(sock, errno, ret);
-        }
+
             break;
         case FSMSG_READ:
-        {
             recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
             printf("received FSMSG_READ, fd = %i\n", cmd.fd);
 		 
-            char buffer[cmd.arg1];
-            read_bytes = read(cmd.fd, &buffer, sizeof(buffer));
+            read_bytes = read(cmd.fd, buffer, MIN(BUFSIZE, cmd.arg1));
             send_reponse(sock, errno, read_bytes);
-            write(sock, &buffer, read_bytes);
-        }
+            bufp = buffer;
+            while (read_bytes) {
+                written_bytes = write(sock, bufp, read_bytes);
+                read_bytes -= written_bytes;
+                bufp += written_bytes;
+            }
+
             break;
         case FSMSG_LSEEK:
             recv(sock, &cmd, sizeof(cmd), MSG_WAITALL);
