@@ -58,6 +58,22 @@ int read_response(int sock, struct fs_response *buf)
     return 0;
 }
 
+int read_stat_response(int sock, struct fs_stat_response *buf)
+{
+    size_t len = sizeof(struct fs_stat_response);
+    void *bufp = buf;
+    ssize_t got;
+    while (len) {
+        got = read(sock, bufp, len);
+        if (got == -1)
+            return -1;
+        len -= got;
+        bufp += got;
+    }
+    return 0;
+}
+
+
 /* on success returns response value
  * on failure returns FSE_FAIL and sets errno
  */
@@ -234,8 +250,17 @@ int fs_close(int server_handle, int fd)
     return process_response(&res);
 }
 
-int fs_fstat(int server_handle, int fd, struct stat *buf)
+int fs_fstat(int server_handle, int fd, struct fs_stat_response *buf)
 {
-    return 0;
+    int sock;
+
+    if (INV_HANDLE(server_handle))
+        return FSE_INVALID_HANDLE;
+    sock = servers[server_handle].sock;
+
+    write_command(sock, FSMSG_STAT, fd, 0, 0);
+    read_stat_response(sock, buf);
+    return process_response(buf->base_response);
 }
+
 
