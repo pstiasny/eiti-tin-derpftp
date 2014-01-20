@@ -42,6 +42,9 @@ Klient przyjmuje na standardowym wejściu następujące polecenia:
 
     close
         Zamknięcie otwartego przez open pliku.
+        
+    fstat
+        Pobiera wybrane informacje o pliku.
 
 Klient dla każdej komendy wypisuje na standardowe wyjście wartości zwrócone
 prez odpowiednie funkcje biblioteki klienta.
@@ -211,3 +214,24 @@ ZWRACANA WARTOŚĆ
 
 
 int fs_fstat(int server_handle, int fd, struct stat *buf)
+
+OPIS
+    Pobranie wybranych informacji o pliku i zapisanie ich w strukturze stat.
+
+    Parametry zapisywane w strukturze stat:
+    st_mode             tryb pliku
+    st_size             rozmiar pliku
+    st_atim             czas ostatniego dostępu do pliku
+    st_mtim             czas ostatniej modyfikacji pliku
+    st_ctim             czas ostatniej zmiany statusu pliku
+    st_blocks           liczba bloków
+    st_blksize          rozmiar bloku
+
+ZWRACANA WARTOĹšÄ†
+    FSE_OK              Funkcja fstat została wykonana poprawnie.
+
+    FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
+
+    FSE_FAIL            Operacja nie powiodła się po stronie serwera.
+                        Zmienna errno została ustawiona na deskryptor
+                        błędu podany przez serwer.
