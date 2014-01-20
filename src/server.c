@@ -16,6 +16,21 @@ int send_reponse(int sock, int status, int value) {
     return 0;
 }
 
+int send_stat_reponse(int sock, int status, int value, struct stat *st) { 
+    struct fs_stat_response resp;
+    resp.base_response.status = status;
+    resp.base_response.val = value;
+    resp.stat.st_mode = st->st_mode; 
+    resp.stat.st_size = st->st_size;
+    resp.stat.st_atim = st->st_atim.tv_sec;
+    resp.stat.st_mtim = st->st_mtim.tv_sec;
+    resp.stat.st_ctim = st->st_ctim.tv_sec;
+    resp.stat.st_blocks = st->st_blocks;
+    resp.stat.st_blksize = st->st_blksize;   
+    write(sock, &resp, sizeof(resp)); /* TODO: send all */
+    return 0;
+}
+
 int handle_connection(int sock, struct sockaddr_in *addr)
 {
     int8_t cmd_type;
@@ -84,8 +99,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
 
             struct stat sb;
             ret = fstat(cmd.fd, &sb);
-            write(sock, &sb, sizeof(sb));
-            send_reponse(sock, 0, ret);
+            send_stat_reponse(sock, 0, ret);
             
             break;
         default:
