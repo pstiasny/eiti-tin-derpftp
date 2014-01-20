@@ -250,17 +250,19 @@ int fs_close(int server_handle, int fd)
     return process_response(&res);
 }
 
-int fs_fstat(int server_handle, int fd, struct fs_stat_response *buf)
+int fs_fstat(int server_handle, int fd, struct fs_stat *buf)
 {
     int sock;
+    struct fs_stat_response resp;
 
     if (INV_HANDLE(server_handle))
         return FSE_INVALID_HANDLE;
     sock = servers[server_handle].sock;
 
     write_command(sock, FSMSG_STAT, fd, 0, 0);
-    read_stat_response(sock, buf);
-    return process_response(buf->base_response);
+    read_stat_response(sock, &resp);
+    memcpy(buf, &resp.stat, sizeof(struct fs_stat));
+    return process_response(&resp.base_response);
 }
 
 

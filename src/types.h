@@ -1,3 +1,4 @@
+#include "../include/fs_server.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -29,14 +30,6 @@ struct fs_response {
 
 struct fs_stat_response {
     struct fs_response base_response;
-    struct {
-        int16_t st_mode;
-        int32_t st_size;
-        int32_t st_atim;
-        int32_t st_mtim;
-        int32_t st_ctim;
-        int32_t st_blocks;
-        int32_t st_blksize;
-    } stat;
+    struct fs_stat stat;
 };
 

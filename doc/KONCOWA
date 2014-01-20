@@ -213,12 +213,12 @@ ZWRACANA WARTOŚĆ
                         błędu podany przez serwer.
 
 
-int fs_fstat(int server_handle, int fd, struct stat *buf)
+int fs_fstat(int server_handle, int fd, struct fs_stat *buf)
 
 OPIS
-    Pobranie wybranych informacji o pliku i zapisanie ich w strukturze stat.
+    Pobranie wybranych informacji o pliku i zapisanie ich w strukturze fs_stat.
 
-    Parametry zapisywane w strukturze stat:
+    Parametry zapisywane w strukturze fs_stat:
     st_mode             tryb pliku
     st_size             rozmiar pliku
     st_atim             czas ostatniego dostępu do pliku
@@ -227,7 +227,7 @@ OPIS
     st_blocks           liczba bloków
     st_blksize          rozmiar bloku
 
-ZWRACANA WARTOĹšÄ†
+ZWRACANA WARTOŚĆ
     FSE_OK              Funkcja fstat została wykonana poprawnie.
 
     FSE_INVALID_HANDLE  Przekazany deskryptor jest nieważny.
