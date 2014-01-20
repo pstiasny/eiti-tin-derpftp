@@ -16,7 +16,7 @@ static struct serverd {
     int sock;
 } servers[MAX_SERVERS];
 
-int get_free_handle()
+static int get_free_handle()
 {
     int i;
 
@@ -26,7 +26,7 @@ int get_free_handle()
     return -1;
 }
 
-int write_command(int sock, enum FSMSG_TYPE type, int32_t fd, int32_t arg1, int32_t arg2)
+static int write_command(int sock, enum FSMSG_TYPE type, int32_t fd, int32_t arg1, int32_t arg2)
 {
     struct fs_command cmd = { type, fd, arg1, arg2 };
     void *cmdp = &cmd;
@@ -43,7 +43,7 @@ int write_command(int sock, enum FSMSG_TYPE type, int32_t fd, int32_t arg1, int3
     return 0;
 }
 
-int read_response(int sock, struct fs_response *buf)
+static int read_response(int sock, struct fs_response *buf)
 {
     size_t len = sizeof(struct fs_response);
     void *bufp = buf;
@@ -58,7 +58,7 @@ int read_response(int sock, struct fs_response *buf)
     return 0;
 }
 
-int read_stat_response(int sock, struct fs_stat_response *buf)
+static int read_stat_response(int sock, struct fs_stat_response *buf)
 {
     size_t len = sizeof(struct fs_stat_response);
     void *bufp = buf;
@@ -77,7 +77,7 @@ int read_stat_response(int sock, struct fs_stat_response *buf)
 /* on success returns response value
  * on failure returns FSE_FAIL and sets errno
  */
-int process_response(struct fs_response *res)
+static int process_response(struct fs_response *res)
 {
     if (res->status) {
         errno = res->status;
