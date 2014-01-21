@@ -143,7 +143,7 @@ fs_close returned 0
 fs_close_server returned 0
 TERM
 
-assert_file_eq "downloaded file" /tmp/OUT < tests/FILE1
+assert_file_eq "downloaded file" /tmp/OUT < tests/FILE2
 
 
 ###############################################################################
@@ -163,7 +163,7 @@ fs_close_server returned 0
 TERM
 
 assert_file_eq "downloaded file" /tmp/OUT <<TERM
-to dane te
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
 TERM
 
 
@@ -188,7 +188,7 @@ fs_close_server returned 0
 TERM
 
 assert_file_eq "downloaded file" /tmp/OUT <<TERM
-stowe
+qwewqreetafsgadg
 TERM
 
 
@@ -206,7 +206,7 @@ fs_write returned 32
 fs_close_server returned 0
 TERM
 
-assert_file_eq "uploaded file" /tmp/OUT < tests/FILE1
+assert_file_eq "uploaded file" /tmp/OUT < tests/FILE2
 
 
 ###############################################################################
