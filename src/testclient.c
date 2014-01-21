@@ -63,6 +63,7 @@ int main(int argc, char **argv)
 
             printf("fs_fstat returned %d\n", result);
             printf("mode: %o\n", stat.st_mode);
+            printf("size: %d\n", stat.st_size);
             if (result == FSE_FAIL)
                 perror("fs_close");
 

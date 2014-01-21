@@ -125,6 +125,8 @@ assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
 fs_open returned 3
 fs_fstat returned 0
+mode: 0644
+size: 32
 fs_close_server returned 0
 TERM
 
