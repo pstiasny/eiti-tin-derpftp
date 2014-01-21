@@ -12,7 +12,7 @@
 
 int send_reponse(int sock, int status, int value) {
     struct fs_response resp = {status, value};
-    write(sock, &resp, sizeof(resp)); /* TODO: send all */
+    send(sock, &resp, sizeof(resp), 0);
     return 0;
 }
 
@@ -27,7 +27,7 @@ int send_stat_reponse(int sock, int status, int value, struct stat *st) {
     resp.stat.st_ctim = st->st_ctim.tv_sec;
     resp.stat.st_blocks = st->st_blocks;
     resp.stat.st_blksize = st->st_blksize;   
-    send(sock, &resp, sizeof(resp), MSG_WAITALL);
+    send(sock, &resp, sizeof(resp), 0);
     return 0;
 }
 
@@ -99,7 +99,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
 
             struct stat sb;
             ret = fstat(cmd.fd, &sb);
-            send_stat_reponse(sock, 0, ret, &sb);
+            send_stat_reponse(sock, errno, ret, &sb);
             
             break;
         default:

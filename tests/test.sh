@@ -115,6 +115,21 @@ assert_file_eq "uploaded file" /tmp/OUT < tests/FILE1
 
 
 ###############################################################################
+echo "TEST stating a file"
+transaction <<TERM
+open tests/FILE1
+fstat
+TERM
+
+assert_file_eq "client messages" /tmp/cout <<TERM
+fs_open_server returned 0
+fs_open returned 3
+fs_fstat returned 0
+fs_close_server returned 0
+TERM
+
+
+###############################################################################
 if [ $FAILED_ASSERTIONS -gt 0 ]; then
     echo "$FAILED_ASSERTIONS assertions failed" >&2
     exit 1

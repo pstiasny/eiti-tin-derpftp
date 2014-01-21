@@ -57,6 +57,15 @@ int main(int argc, char **argv)
             if (result == FSE_FAIL)
                 perror("fs_lseek");
 
+        } else if (0 == strcmp(input_buf, "fstat\n")) {
+            struct fs_stat stat;
+            result = fs_fstat(server_handle, remote_fd, &stat);
+
+            printf("fs_fstat returned %d\n", result);
+            printf("mode: %o\n", stat.st_mode);
+            if (result == FSE_FAIL)
+                perror("fs_close");
+
         } else if (0 == strcmp(input_buf, "close\n")) {
             result = fs_close(server_handle, remote_fd);
 

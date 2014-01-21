@@ -14,13 +14,13 @@
 #define FSE_INVALID_RESP    (-6)
 
 struct fs_stat {
-    int16_t st_mode;
     int32_t st_size;
     int32_t st_atim;
     int32_t st_mtim;
     int32_t st_ctim;
     int32_t st_blocks;
     int32_t st_blksize;
+    int16_t st_mode;
 };
 
 int fs_open_server(const char *server_addr);

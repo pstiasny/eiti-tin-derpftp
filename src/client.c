@@ -261,7 +261,7 @@ int fs_fstat(int server_handle, int fd, struct fs_stat *buf)
 
     write_command(sock, FSMSG_STAT, fd, 0, 0);
     read_stat_response(sock, &resp);
-    memcpy(buf, &resp.stat, sizeof(struct fs_stat));
+    memcpy(buf, &(resp.stat), sizeof(struct fs_stat));
     return process_response(&resp.base_response);
 }
 
