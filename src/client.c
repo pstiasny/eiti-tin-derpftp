@@ -1,5 +1,5 @@
-#include "../include/fs_server.h"
 #include "types.h"
+#include "../include/fs_server.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -260,7 +260,7 @@ int fs_fstat(int server_handle, int fd, struct fs_stat_response *buf)
 
     write_command(sock, FSMSG_STAT, fd, 0, 0);
     read_stat_response(sock, buf);
-    return process_response(buf->base_response);
+    return process_response(&(buf->base_response));
 }
 
 

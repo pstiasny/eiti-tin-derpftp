@@ -99,7 +99,7 @@ int handle_connection(int sock, struct sockaddr_in *addr)
 
             struct stat sb;
             ret = fstat(cmd.fd, &sb);
-            send_stat_reponse(sock, 0, ret);
+            send_stat_reponse(sock, 0, ret, &sb);
             
             break;
         default:

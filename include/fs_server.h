@@ -17,5 +17,4 @@ int fs_write(int server_handle, int fd, void *buf, size_t len);
 int fs_read(int server_handle, int fd, void *buf, size_t len);
 int fs_lseek(int server_handle, int fd, long offset, int whence);
 int fs_close(int server_handle, int fd);
-int fs_fstat(int server_handle, int fd, struct stat *buf);
-
+int fs_fstat(int server_handle, int fd, struct fs_stat_response *buf);
