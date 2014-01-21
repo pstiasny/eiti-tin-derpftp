@@ -62,7 +62,7 @@ int main(int argc, char **argv)
             result = fs_fstat(server_handle, remote_fd, &stat);
 
             printf("fs_fstat returned %d\n", result);
-            printf("mode: %o\n", stat.st_mode);
+            printf("mode: 0%o\n", stat.st_mode & 0x777);
             printf("size: %d\n", stat.st_size);
             if (result == FSE_FAIL)
                 perror("fs_close");
