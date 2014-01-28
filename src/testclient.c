@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
         if (1 == sscanf(input_buf, "open %255s", filename)) {
             remote_fd = fs_open(server_handle, filename, O_RDWR | O_CREAT);
-            printf("fs_open returned %d\n", remote_fd);
+            printf("fs_open returned %d\n", remote_fd >= 0);
             if (remote_fd == FSE_FAIL)
                 perror("fs_open");
 

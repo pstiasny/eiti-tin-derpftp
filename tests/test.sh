@@ -27,7 +27,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_close_server returned 0
 TERM
 
@@ -42,7 +42,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_read returned 32
 fs_close returned 0
 fs_close_server returned 0
@@ -61,7 +61,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_read returned 10
 fs_close returned 0
 fs_close_server returned 0
@@ -84,7 +84,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_lseek returned 11
 fs_lseek returned 10
 fs_read returned 5
@@ -106,7 +106,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_write returned 32
 fs_close_server returned 0
 TERM
@@ -123,7 +123,7 @@ TERM
 
 assert_file_eq "client messages" /tmp/cout <<TERM
 fs_open_server returned 0
-fs_open returned 3
+fs_open returned 1
 fs_fstat returned 0
 mode: 0444
 size: 32
