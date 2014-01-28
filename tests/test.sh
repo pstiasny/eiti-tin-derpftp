@@ -6,6 +6,7 @@ transaction() {
     rm -f /tmp/OUT
     bin/derpftpd 2>&1 > /tmp/dout &
     DPID=$!
+    sleep 0.5
     bin/testclient 2>&1 > /tmp/cout
     kill -SIGTERM $DPID 2>&1 > /dev/null
 }
